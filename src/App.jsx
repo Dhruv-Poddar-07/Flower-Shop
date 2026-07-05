@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductList from "./ProductList";
 import Header from "./Header";
 import Hero from "./Hero";
@@ -63,6 +64,16 @@ function App() {
 
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }, [cart])
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('cart')
+    if (saved) setCart(JSON.parse(saved))
+  }, [])
 
   // Add Product
   function handleAddToCart(product) {
