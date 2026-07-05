@@ -63,18 +63,18 @@ function App() {
 
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart))
   }, [cart])
 
-  // Load cart from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem('cart')
     if (saved) setCart(JSON.parse(saved))
+    setLoaded(true)
   }, [])
 
-  // Add Product
   function handleAddToCart(product) {
     const existingProduct = cart.find(
       (item) => item.id === product.id
@@ -102,14 +102,12 @@ function App() {
     }
   }
 
-  // Remove Product
   function removeFromCart(id) {
     setCart(
       cart.filter((item) => item.id !== id)
     );
   }
 
-  // Increase Quantity
   function increaseQuantity(id) {
     setCart(
       cart.map((item) =>
@@ -123,7 +121,6 @@ function App() {
     );
   }
 
-  // Decrease Quantity
   function decreaseQuantity(id) {
     setCart(
       cart
@@ -139,19 +136,19 @@ function App() {
     );
   }
 
-  // Total Price
   const totalPrice = cart.reduce(
     (total, item) =>
       total + item.price * item.quantity,
     0
   );
 
-  // Total Items
   const totalItems = cart.reduce(
     (total, item) =>
       total + item.quantity,
     0
   );
+
+  if (!loaded) return <div></div>
 
   return (
     <div>
@@ -188,8 +185,6 @@ function App() {
 
     <Footer/>
     </div>
-
-    
   );
 }
 
