@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { useState, useEffect } from "react";
 import ProductList from "./ProductList";
 import Header from "./Header";
