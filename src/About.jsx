@@ -26,7 +26,6 @@ function About() {
               Cumque similique quasi nam modi...
             </p>
 
-            <button>Read More</button>
           </div>
         </div>
       </div>

@@ -11,148 +11,87 @@ import Footer from "./Footer";
 
 function App() {
   const products = [
-    {
-      id: 1,
-      name: "Rose Garden Pot",
-      price: 15.99,
-      oldPrice: 19.99,
-      img: "/rose.webp",
-      discount: "-10%",
-    },
-    {
-      id: 2,
-      name: "Lily Arrangement",
-      price: 14.49,
-      oldPrice: 18.99,
-      img: "/lily.jpg",
-      discount: "-15%",
-    },
-    {
-      id: 3,
-      name: "Spring Tulip Bundle",
-      price: 17.25,
-      oldPrice: 21.99,
-      img: "/tulip.webp",
-      discount: "-16%",
-    },
-    {
-      id: 4,
-      name: "Peony Deluxe Pot",
-      price: 18.5,
-      oldPrice: 23.99,
-      img: "/peony.jpg",
-      discount: "-16%",
-    },
-    {
-      id: 5,
-      name: "Sunflower Cheer",
-      price: 12.99,
-      oldPrice: 16.99,
-      img: "/sunflower.jpg",
-      discount: "-10%",
-    },
-    {
-      id: 6,
-      name: "Orchid Elegance",
-      price: 19.99,
-      oldPrice: 24.99,
-      img: "/orchid.jpg",
-      discount: "-10%",
-    },
+    { id: 1, name: "Rose Garden Pot", price: 15.99, oldPrice: 19.99, img: "/rose.webp", discount: "-10%" },
+    { id: 2, name: "Lily Arrangement", price: 14.49, oldPrice: 18.99, img: "/lily.jpg", discount: "-15%" },
+    { id: 3, name: "Spring Tulip Bundle", price: 17.25, oldPrice: 21.99, img: "/tulip.webp", discount: "-16%" },
+    { id: 4, name: "Peony Deluxe Pot", price: 18.5, oldPrice: 23.99, img: "/peony.jpg", discount: "-16%" },
+    { id: 5, name: "Sunflower Cheer", price: 12.99, oldPrice: 16.99, img: "/sunflower.jpg", discount: "-10%" },
+    { id: 6, name: "Orchid Elegance", price: 19.99, oldPrice: 24.99, img: "/orchid.jpg", discount: "-10%" },
   ];
 
-  const [cart, setCart] = useState([]);
+  // Load cart from Local Storage only once
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [loaded, setLoaded] = useState(false);
 
+  // Save cart whenever it changes
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart))
-  }, [cart])
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('cart')
-    if (saved) setCart(JSON.parse(saved))
-    setLoaded(true)
-  }, [])
-
+  // Add Product
   function handleAddToCart(product) {
-    const existingProduct = cart.find(
-      (item) => item.id === product.id
-    );
+    setCart((prev) => {
+      const exists = prev.find((item) => item.id === product.id);
 
-    if (existingProduct) {
-      setCart(
-        cart.map((item) =>
+      if (exists) {
+        return prev.map((item) =>
           item.id === product.id
-            ? {
-                ...item,
-                quantity: item.quantity + 1,
-              }
+            ? { ...item, quantity: item.quantity + 1 }
             : item
-        )
-      );
-    } else {
-      setCart([
-        ...cart,
-        {
-          ...product,
-          quantity: 1,
-        },
-      ]);
-    }
+        );
+      }
+
+      return [...prev, { ...product, quantity: 1 }];
+    });
   }
 
+  // Remove Product
   function removeFromCart(id) {
-    setCart(
-      cart.filter((item) => item.id !== id)
-    );
+    setCart((prev) => prev.filter((item) => item.id !== id));
   }
 
+  // Increase Quantity
   function increaseQuantity(id) {
-    setCart(
-      cart.map((item) =>
+    setCart((prev) =>
+      prev.map((item) =>
         item.id === id
-          ? {
-              ...item,
-              quantity: item.quantity + 1,
-            }
+          ? { ...item, quantity: item.quantity + 1 }
           : item
       )
     );
   }
 
+  // Decrease Quantity
   function decreaseQuantity(id) {
-    setCart(
-      cart
+    setCart((prev) =>
+      prev
         .map((item) =>
           item.id === id
-            ? {
-                ...item,
-                quantity: item.quantity - 1,
-              }
+            ? { ...item, quantity: item.quantity - 1 }
             : item
         )
         .filter((item) => item.quantity > 0)
     );
   }
 
+  // Total Price
   const totalPrice = cart.reduce(
-    (total, item) =>
-      total + item.price * item.quantity,
+    (total, item) => total + item.price * item.quantity,
     0
   );
 
+  // Total Items
   const totalItems = cart.reduce(
-    (total, item) =>
-      total + item.quantity,
+    (total, item) => total + item.quantity,
     0
   );
-
-  if (!loaded) return <div></div>
 
   return (
     <div>
-
       <Header
         cartCount={totalItems}
         openCart={() => setIsCartOpen(true)}
@@ -179,11 +118,11 @@ function App() {
         removeFromCart={removeFromCart}
       />
 
-    <Reviews />
-    
-    <Contact/>
+      <Reviews />
 
-    <Footer/>
+      <Contact />
+
+      <Footer />
     </div>
   );
 }
