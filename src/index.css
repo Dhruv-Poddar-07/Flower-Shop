@@ -97,10 +97,13 @@ header ul li{
     cursor: pointer;
 }
 
-header ul li a{
+header ul li a {
+    position: relative;
     text-decoration: none;
     color: gray;
+    transition: color .3s ease;
 }
+
 header .icon{
     width: 150px;
     height: 50px;
@@ -117,8 +120,29 @@ header .icon i{
     cursor: pointer;
 }
 
-header ul li:hover{
+header ul li a:hover {
     color: rgb(255, 30, 199);
+}
+
+header ul li a::after {
+    content: "";
+    position: absolute;
+
+    left: 50%;
+    bottom: -4px;
+
+    width: 0%;
+    height: 1.5px;
+
+    background: rgb(255, 30, 199);
+
+    transform: translateX(-50%);
+
+    transition: width .55s cubic-bezier(.15,0,.1,1);
+}
+
+header ul li a:hover::after {
+    width: 100%;
 }
 
 header .icon i:hover{
